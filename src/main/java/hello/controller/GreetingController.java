@@ -1,12 +1,13 @@
-package hello;
+package hello.controller;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import hello.bean.Greeting;
+import hello.domain.Cliente;
+import hello.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class GreetingController {
@@ -25,7 +26,7 @@ public class GreetingController {
 
     @GetMapping(path="/add") // Map ONLY GET Requests
     public Cliente addNewCliente (@RequestParam(value="name") String name,
-                                @RequestParam(value="email") String email) {
+                                  @RequestParam(value="email") String email) {
 
         Cliente cliente = new Cliente();
         cliente.setEmail(email);
@@ -34,5 +35,17 @@ public class GreetingController {
         clienteRepository.save(cliente);
 
         return cliente;
+    }
+
+    @GetMapping(path="/list")
+    public Iterable<Cliente> listaClientes () {
+        Iterable<Cliente> clientes = clienteRepository.findAll();
+        return clientes;
+    }
+
+    @PostMapping(path="/findAllByName")
+    public List<Cliente> findByName (@RequestParam(value="name") String name) {
+        List<Cliente> clientes = clienteRepository.findByName(name);
+        return clientes;
     }
 }
